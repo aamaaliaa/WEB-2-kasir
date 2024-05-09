@@ -7,7 +7,7 @@ session_start();
 // $username = 'root';
 // $password = '';
 // $database = 'kasir';
-$koneksi = mysqli_connect('localhost', 'root', ' ', 'kasir');
+$koneksi = mysqli_connect('localhost', 'root', '', 'kasir');
 
 
 // Periksa koneksi
