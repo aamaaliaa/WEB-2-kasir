@@ -3,12 +3,7 @@
 session_start();
 
 // Koneksi ke database
-// $host = 'localhost';
-// $username = 'root';
-// $password = '';
-// $database = 'kasir';
 $koneksi = mysqli_connect('localhost', 'root', '', 'kasir');
-
 
 // Periksa koneksi
 if (!$koneksi) {
@@ -16,25 +11,41 @@ if (!$koneksi) {
 }
 
 // Proses login
-if(isset($_POST['login'])){
+if (isset($_POST['login'])) {
     // Ambil data dari form
     $username = $_POST['username'];
     $password = $_POST['password'];
 
     // Query untuk memeriksa keberadaan pengguna
-    $check = mysqli_query($koneksi, "SELECT * FROM user WHERE username ='$username' AND password = '$password'");
+    $check = mysqli_query($koneksi, "SELECT * FROM user WHERE username = '$username' AND password = '$password'");
     $hitung = mysqli_num_rows($check);
 
     // Periksa hasil query
-    if($hitung > 0){
+    if ($hitung > 0) {
         // Jika data ditemukan, set session login dan arahkan ke halaman index.php
-        session_start();
         $_SESSION['login'] = true;
         header('location: index.php');
         exit();
     } else {
         // Jika data tidak ditemukan, tampilkan pesan kesalahan
         echo '<script>alert("Username atau password salah");</script>';
+    }
+}
+
+if (isset($_POST['tambah'])) {
+    // deskripsi initial variabel 
+    $nama_produk = $_POST['nama_produk'];
+    $deskripsi = $_POST['deskripsi'];
+    $harga = $_POST['harga'];
+    $stok = $_POST['stok'];
+
+    $insert_produk = mysqli_query($koneksi, "INSERT INTO produk (nama_produk, deskripsi, harga, stok) VALUES ('$nama_produk', '$deskripsi', '$harga', '$stok')");
+
+    if ($insert_produk) {
+        header('location: stok.php');
+    } else {
+        // Jika data tidak ditemukan, tampilkan pesan kesalahan
+        echo '<script>alert("Gagal Tambah Produk");</script>';
     }
 }
 ?>
