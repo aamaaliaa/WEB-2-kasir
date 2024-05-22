@@ -34,15 +34,20 @@
                             <div class="sb-sidenav-menu-heading">Toko ATK</div>
                             <a class="nav-link" href="index.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Laporan
+                                Order
                             </a>
                             <a class="nav-link" href="masuk.php">
                                 <div class="sb-nav-link-icon"><i class="fa fa-credit-card" aria-hidden="true"></i></i></div>
-                                Transction
+                                Barang Masuk
                             </a>
                             <a class="nav-link" href="stok.php">
                                 <div class="sb-nav-link-icon"><i class="fa fa-shopping-basket" aria-hidden="true"></i></i></div>
-                                Inventory
+                                Stok Barang
+                            </a>
+                            
+                            <a class="nav-link" href="pelanggan.php">
+                                <div class="sb-nav-link-icon"><i class="fa fa-shopping-basket" aria-hidden="true"></i></i></div>
+                                Kelola Pelanggan
                             </a>
                             <a class="nav-link" href="logout.php">
                                 <div class="sb-nav-link-icon"><i class="fa fa-sign-out" aria-hidden="true"></i></i></div>
@@ -147,23 +152,34 @@
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <script src="js/datatables-simple-demo.js"></script>
     </body>
-    <!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+    <div class="modal" id="myModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
 
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Modal Header</h4>
-      </div>
-      <div class="modal-body">
-        <p>Some text in the modal.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Data Pesanan</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form method="POST">
+              <!-- Modal body -->
+              <div class="modal-body">
+                pilih pelanggan
+
+                <?php
+                
+                ?>
+
+                  <input type="text" name="nama_produk" class="form-control mt-3" placeholder="nama produk">
+                  <input type="text" name="deskripsi" class="form-control mt-3" placeholder="deskripsi">
+                  <input type="num" name="harga" class="form-control mt-3" placeholder="harga">
+                  <input type="num" name="stok" class="form-control mt-3" placeholder="stok">
+              </div>
+
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                  <button type="submit" class="btn btn-danger" name="tambah">Simpan</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+              </div>
+          </form>
 </html>

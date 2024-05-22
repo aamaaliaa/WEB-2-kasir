@@ -32,6 +32,7 @@ if (isset($_POST['login'])) {
     }
 }
 
+// Proses tambah produk
 if (isset($_POST['tambah'])) {
     // deskripsi initial variabel 
     $nama_produk = $_POST['nama_produk'];
@@ -46,6 +47,23 @@ if (isset($_POST['tambah'])) {
     } else {
         // Jika data tidak ditemukan, tampilkan pesan kesalahan
         echo '<script>alert("Gagal Tambah Produk");</script>';
+    }
+}
+
+// Proses tambah pelanggan
+if (isset($_POST['tambahpelanggan'])) {
+    // deskripsi initial variabel 
+    $nama_pelanggan = $_POST['nama_pelanggan'];
+    $notelp = $_POST['notelp'];
+    $alamat = $_POST['alamat'];
+
+    $insert_pelanggan = mysqli_query($koneksi, "INSERT INTO pelanggan (nama_pelanggan, notelp, alamat) VALUES ('$nama_pelanggan', '$notelp', '$alamat')");
+
+    if ($insert_pelanggan) {
+        header('location: pelanggan.php');
+    } else {
+        // Jika data tidak ditemukan, tampilkan pesan kesalahan
+        echo '<script>alert("Gagal Tambah Pelanggan");</script>';
     }
 }
 ?>
