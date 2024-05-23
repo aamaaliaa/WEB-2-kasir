@@ -1,26 +1,39 @@
 <?php
 require 'function.php';
+
+// Proses hapus pelanggan
+if (isset($_POST['deletepelanggan'])) {
+    $id_pelanggan = $_POST['id_pelanggan'];
+
+    $delete_pelanggan = mysqli_query($koneksi, "DELETE FROM pelanggan WHERE id_pelanggan = '$id_pelanggan'");
+
+    if ($delete_pelanggan) {
+        header('Location: pelanggan.php');
+        exit();
+    } else {
+        echo '<script>alert("Gagal Hapus Pelanggan");</script>';
+    }
+}
+
 $pelanggan = mysqli_query($koneksi, "SELECT * FROM pelanggan");
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
     <title>Aplikasi Kasir</title>
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-    <link href="css/styles.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <link href="assets/img/start.png" rel="icon">
 </head>
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-        <!-- Navbar Brand-->
-        <a class="navbar-brand ps-3" href="index.html">Aplikasi Kasir</a>
-        <!-- Sidebar Toggle-->
+        <a class="navbar-brand ps-3" href="index.php">Aplikasi Kasir</a>
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
     </nav>
     <div id="layoutSidenav">
@@ -42,9 +55,9 @@ $pelanggan = mysqli_query($koneksi, "SELECT * FROM pelanggan");
                             Stok Barang
                         </a>
                         <a class="nav-link" href="pelanggan.php">
-                                <div class="sb-nav-link-icon"><i class="fa fa-shopping-basket" aria-hidden="true"></i></div>
-                                Kelola Pelanggan
-                            </a>
+                            <div class="sb-nav-link-icon"><i class="fa fa-users" aria-hidden="true"></i></div>
+                            Kelola Pelanggan
+                        </a>
                         <a class="nav-link" href="logout.php">
                             <div class="sb-nav-link-icon"><i class="fa fa-sign-out" aria-hidden="true"></i></div>
                             Logout
@@ -85,19 +98,18 @@ $pelanggan = mysqli_query($koneksi, "SELECT * FROM pelanggan");
                                 </thead>
                                 <tbody>
                                     <?php $i = 1; ?>
-                                    <?php foreach ($pelanggan as $plg) : ?>
+                                    <?php while ($plg = mysqli_fetch_assoc($pelanggan)) : ?>
                                     <tr>
-                                        <td><?= $i; ?></td>
-                                        <td><?= $plg['nama_pelanggan']; ?></td>
-                                        <td><?= $plg['notelp']; ?></td>
-                                        <td><?= $plg['alamat']; ?></td>
+                                        <td><?= $i++; ?></td>
+                                        <td><?= htmlspecialchars($plg['nama_pelanggan']); ?></td>
+                                        <td><?= htmlspecialchars($plg['notelp']); ?></td>
+                                        <td><?= htmlspecialchars($plg['alamat']); ?></td>
                                         <td>
-                                            <a href="view.php?idp=<?= $plg['id_pelanggan']; ?>" class="btn btn-primary" target="_blank">TAMPILKAN</a>
-                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $plg['id_pelanggan']; ?>">Delete</button>
+                                            <a href="view.php?idp=<?= htmlspecialchars($plg['id_pelanggan']); ?>" class="btn btn-primary" target="_blank">Tampilkan</a>
+                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?= htmlspecialchars($plg['id_pelanggan']); ?>">Delete</button>
                                         </td>
                                     </tr>
-                                    <?php $i++; ?>
-                                    <?php endforeach; ?>
+                                    <?php endwhile; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -116,67 +128,62 @@ $pelanggan = mysqli_query($koneksi, "SELECT * FROM pelanggan");
 
     <!-- The Modal for Adding Customers -->
     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h4 class="modal-title" id="myModalLabel">Data Tambah Pelanggan</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <form method="POST" action="add_pelanggan.php">
-              <!-- Modal body -->
-              <div class="modal-body">
-                  <input type="text" name="nama_pelanggan" class="form-control mt-3" placeholder="Nama Pelanggan" required>
-                  <input type="text" name="notelp" class="form-control mt-3" placeholder="No. Telepon" required>
-                  <input type="text" name="alamat" class="form-control mt-3" placeholder="Alamat" required>
-              </div>
-
-              <!-- Modal footer -->
-              <div class="modal-footer">
-                  <button type="submit" class="btn btn-success" name="tambahpelanggan">Simpan</button>
-                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
-              </div>
-          </form>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Tambah Pelanggan</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="pelanggan.php">
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <input type="text" name="nama_pelanggan" class="form-control mt-3" placeholder="Nama Pelanggan" required>
+                        <input type="text" name="notelp" class="form-control mt-3" placeholder="No. Telepon" required>
+                        <input type="text" name="alamat" class="form-control mt-3" placeholder="Alamat" required>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" name="tambahpelanggan">Simpan</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
     </div>
 
-    <?php foreach ($pelanggan as $plg) : ?>
-    <!-- The Modal for Deleting Customers -->
-    <div class="modal fade" id="deleteModal<?= $plg['id_pelanggan']; ?>" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h4 class="modal-title" id="deleteModalLabel">Hapus Pelanggan</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <form method="POST" action="delete_pelanggan.php">
-              <!-- Modal body -->
-              <div class="modal-body">
-                  Apakah Anda yakin ingin menghapus pelanggan <b><?= $plg['nama_pelanggan']; ?></b>?
-                  <input type="hidden" name="id_pelanggan" value="<?= $plg['id_pelanggan']; ?>">
-              </div>
-
-              <!-- Modal footer -->
-              <div class="modal-footer">
-                  <button type="submit" class="btn btn-danger" name="hapuspelanggan">Hapus</button>
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-              </div>
-          </form>
+    <!-- Delete Modal -->
+    <?php
+    mysqli_data_seek($pelanggan, 0); // Reset result pointer to the beginning
+    while ($plg = mysqli_fetch_assoc($pelanggan)) : ?>
+    <div class="modal fade" id="deleteModal<?= htmlspecialchars($plg['id_pelanggan']); ?>" tabindex="-1" aria-labelledby="deleteModalLabel<?= htmlspecialchars($plg['id_pelanggan']); ?>" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="deleteModalLabel<?= htmlspecialchars($plg['id_pelanggan']); ?>">Hapus Pelanggan</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="pelanggan.php">
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        Apakah Anda yakin ingin menghapus pelanggan ini?
+                        <input type="hidden" name="id_pelanggan" value="<?= htmlspecialchars($plg['id_pelanggan']); ?>">
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger" name="deletepelanggan">Hapus</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
     </div>
-    <?php endforeach; ?>
+    <?php endwhile; ?>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/scripts.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-    <script src="assets/demo/chart-area-demo.js"></script>
-    <script src="assets/demo/chart-bar-demo.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
     <script src="js/datatables-simple-demo.js"></script>
 </body>
 </html>

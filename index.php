@@ -57,21 +57,19 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Dashboard</h1>
+                        <h1 class="mt-4">Data Pesanan</h1>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">Dashboard</li>
                         </ol>
                         <div class="row">
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Primary Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card bg-primary text-white mb-4">
+                                <div class="card-body">Jumlah Pesanan</div>
                             </div>
-                        
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">Tambah Pesanan</button>
+                            <div class="container mt-3"></div>
+                        </div>
+                    </div>
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
@@ -165,10 +163,24 @@
               <!-- Modal body -->
               <div class="modal-body">
                 pilih pelanggan
-
-                <?php
+                <select name="id_pelanggan" class="form-control">
                 
-                ?>
+                    <?php
+                    $getpelanggan = mysqli_query($koneksi, "SELECT * from Pelanggan");
+
+                    while ($pl = mysqli_fetch_array($getpelanggan)){
+                        $id_pelanggan = $pl['id_pesanan'];
+                        $nama_pelanggan = $pl['tgl_pesan'];
+                        $alamat = $pl['id_pelanggan'];
+
+                    ?>
+                    <option value="<?=$id_pelanggan; ?>">"><?= $nama_pelanggan; ?> - <?=$alamat; ?></option>
+                    <?php
+                    }
+                    ?> 
+
+                </select>
+                
 
                   <input type="text" name="nama_produk" class="form-control mt-3" placeholder="nama produk">
                   <input type="text" name="deskripsi" class="form-control mt-3" placeholder="deskripsi">
@@ -178,7 +190,7 @@
 
               <!-- Modal footer -->
               <div class="modal-footer">
-                  <button type="submit" class="btn btn-danger" name="tambah">Simpan</button>
+                  <button type="submit" class="btn btn-danger" name="tambahpesanan">Simpan</button>
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
               </div>
           </form>
