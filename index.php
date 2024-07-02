@@ -1,10 +1,7 @@
 <?php
 require 'ceklogin.php';
-
-// hitung jumlah
 $h1 = mysqli_query($koneksi, "SELECT * FROM pesanan");
 $h2 = mysqli_num_rows($h1);
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,35 +19,34 @@ $h2 = mysqli_num_rows($h1);
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="index.php">Start Bootstrap</a>
+            <a class="navbar-brand ps-3" href="index.php">Aplikasi Kasir</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-            
         </nav>
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Menu</div>
+                            <div class="sb-sidenav-menu-heading">Toko ATK</div>
                             <a class="nav-link" href="index.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Order
                             </a>
-                            <a class="nav-link" href="stock.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Stock Barang
-                            </a>
                             <a class="nav-link" href="masuk.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa fa-credit-card" aria-hidden="true"></i></div>
                                 Barang Masuk
                             </a>
+                            <a class="nav-link" href="stok.php">
+                                <div class="sb-nav-link-icon"><i class="fa fa-shopping-basket" aria-hidden="true"></i></div>
+                                Stok Barang
+                            </a>
                             <a class="nav-link" href="pelanggan.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa fa-shopping-basket" aria-hidden="true"></i></div>
                                 Kelola Pelanggan
                             </a>
                             <a class="nav-link" href="logout.php">
-                                <div class="sb-nav-link-icon"><i class="fa fa-sign-out"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa fa-sign-out" aria-hidden="true"></i></div>
                                 Logout
                             </a>
                         </div>
@@ -64,12 +60,12 @@ $h2 = mysqli_num_rows($h1);
                         <div class="row">
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-2">
-                                    <div class="card-body">Jumlah Pesanan: <?= $h2;?> </div>
+                                    <div class="card-body">Jumlah Pesanan : <?= $h2; ?></div>
                                 </div>
-                                <div >
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
-                                    Tambah Pesanan
-                                </button>
+                                <div>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+                                        Tambah Pesanan
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -91,28 +87,28 @@ $h2 = mysqli_num_rows($h1);
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    <?php
-                                        $getpesanan = mysqli_query($koneksi,
-                                        "SELECT * FROM pesanan p, pelanggan pl WHERE p.id_pelanggan=pl.id_pelanggan");
-
+                                        <?php
+                                        $getpesanan = mysqli_query($koneksi, "SELECT * FROM pesanan p, pelanggan pl WHERE p.id_pelanggan=pl.id_pelanggan");
                                         while ($p = mysqli_fetch_array($getpesanan)) {
                                             $id_pesanan = $p['id_pesanan'];
                                             $tanggal = $p['tgl_pesan'];
                                             $nama_pelanggan = $p['nama_pelanggan'];
                                             $alamat = $p['alamat'];
+
+                                            // hitung jumlah
                                             $hitungjumlah = mysqli_query($koneksi, "SELECT * FROM detail_pesanan WHERE id_pesanan='$id_pesanan'");
                                             $jumlah = mysqli_num_rows($hitungjumlah);
                                         ?>
-                                        <tr>
-                                            <td><?= $id_pesanan ?></td>                                            
-                                            <td><?= $tanggal; ?></td>
-                                            <td><?= $nama_pelanggan; ?></td>
-                                            <td><?= $alamat ?></td>
-                                            <td><?= $jumlah ?></td>
-                                            <td><a href="view.php?idp= <?= $id_pesanan; ?>" class="btn btn-primary" target="_blank">Tampilkan</a> | Delete</td>
-                                        </tr>
-                                        <?php 
-                                            }; 
+                                            <tr>
+                                                <td><?= $id_pesanan ?></td>
+                                                <td><?= $tanggal; ?></td>
+                                                <td><?= $nama_pelanggan; ?></td>
+                                                <td><?= $alamat ?></td>
+                                                <td><?= $jumlah ?></td>
+                                                <td><a href="view.php?idp=<?= $id_pesanan; ?>" class="btn btn-primary" target="_blank">Tampilkan</a> | Delete</td>
+                                            </tr>
+                                        <?php
+                                        };
                                         ?>
                                     </tbody>
                                 </table>
@@ -137,46 +133,39 @@ $h2 = mysqli_num_rows($h1);
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <script src="js/datatables-simple-demo.js"></script>
     </body>
-<div class="modal" id="myModal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">Data Tambah Pesanan</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-<form method="POST">
-      <!-- Modal body -->
-      <div class="modal-body">
-        Pilih Pelanggan
-        <select name="id_pelanggan" class="form-control">
-
-        <?php
-        $getpelanggan = mysqli_query($koneksi, "SELECT * FROM pelanggan");
-
-        while($pl = mysqli_fetch_array($getpelanggan)){
-            $id_pelanggan = $pl['id_pelanggan'];
-            $nama_pelanggan = $pl['nama_pelanggan'];
-            $alamat = $pl['alamat'];
-        ?>
-        <option value="<?=$id_pelanggan; ?>"> <?= $nama_pelanggan; ?> - <?= $alamat; ?></option>
-        <?php    
-        }
-        
-        ?>
-        </select>
-        
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-success" name="tambahpesanan">Simpan</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Data Tambah Pesanan</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST">
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        Pilih Pelanggan
+                        <select name="id_pelanggan" class="form-control">
+                            <?php
+                            $getpelanggan = mysqli_query($koneksi, "SELECT * FROM Pelanggan");
+                            while ($pl = mysqli_fetch_array($getpelanggan)) {
+                                $id_pelanggan = $pl['id_pelanggan'];
+                                $nama_pelanggan = $pl['nama_pelanggan'];
+                                $alamat = $pl['alamat'];
+                            ?>
+                                <option value="<?= $id_pelanggan; ?>"> <?= $nama_pelanggan; ?> - <?= $alamat; ?></option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" name="tambahpesanan">Simpan</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-</form>
 </html>
