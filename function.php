@@ -28,22 +28,6 @@ if (isset($_POST['login'])) {
     }
 }
 
-// Proses tambah produk
-if (isset($_POST['tambah'])) {
-    $nama_produk = $_POST['nama_produk'];
-    $deskripsi = $_POST['deskripsi'];
-    $harga = $_POST['harga'];
-    $stok = $_POST['stok'];
-
-    $insert_produk = mysqli_query($koneksi, "INSERT INTO produk (nama_produk, deskripsi, harga, stok) VALUES ('$nama_produk', '$deskripsi', '$harga', '$stok')");
-
-    if ($insert_produk) {
-        header('Location: stok.php');
-    } else {
-        echo '<script>alert("Gagal Tambah Produk");</script>';
-    }
-}
-
 // Proses tambah pelanggan
 if (isset($_POST['tambahpelanggan'])) {
     $nama_pelanggan = $_POST['nama_pelanggan'];
@@ -102,30 +86,19 @@ if (isset($_POST['addproduk'])) {
 
         // Stoknya cukup
         $insert = mysqli_query($koneksi, "INSERT INTO detail_pesanan (id_pesanan, id_produk, qty) VALUES ('$idp','$id_produk','$qty')"); 
-        $update = mysqli_query($koneksi, "UPDATE produk SET stok='$selisih' WHERE id_produk='$id_produk'");
-
-        if ($insert && $update) {
-            header('Location: view.php?idp='.$idp);
+        if ($insert) {
+            $update = mysqli_query($koneksi, "UPDATE produk SET stok='$selisih' WHERE id_produk='$id_produk'");
+            if ($update) {
+                header('Location: view.php?idp='.$idp);
+            } else {
+                echo '<script>alert("Gagal update stok");</script>';
+            }
         } else {
             echo '<script>alert("Gagal tambah produk");</script>';
         }
     } else {
         // Stok tidak cukup
         echo '<script>alert("Stok tidak cukup");</script>';
-    }
-}
-
-// Proses tambah barang masuk
-if (isset($_POST['barangmasuk'])) {
-    $id_produk = $_POST['id_produk'];
-    $qty = $_POST['qty'];
-
-    $insertbar = mysqli_query($koneksi, "INSERT INTO masuk (id_produk, qty) VALUES ('$id_produk', '$qty')");
-
-    if ($insertbar) {
-        header('Location: masuk.php');
-    } else {
-        echo '<script>alert("Gagal");</script>';
     }
 }
 
@@ -147,15 +120,19 @@ if (isset($_POST['hapusprodukpesanan'])) {
 
     $hitung = $stoksekarang + $qtysekarang;
 
-    $update = mysqli_query($koneksi, "UPDATE produk SET stok='$hitung' WHERE id_produk='$idpr'"); // untuk update stok
     $hapus = mysqli_query($koneksi, "DELETE FROM detail_pesanan WHERE id_produk='$idpr' AND id_detailpesanan='$iddetail'");
-
-    if ($update && $hapus) {
-        header('Location: view.php?idp='.$idp);
+    if ($hapus) {
+        $update = mysqli_query($koneksi, "UPDATE produk SET stok='$hitung' WHERE id_produk='$idpr'");
+        if ($update) {
+            header('Location: view.php?idp='.$idp);
+        } else {
+            echo '<script>alert("Gagal update stok");</script>';
+        }
     } else {
         echo '<script>alert("Gagal hapus produk pesanan");</script>';
     }
 }
+
 
 // Update produk jika tombol edit ditekan
 if (isset($_POST['editproduk'])) {
@@ -184,6 +161,21 @@ if (isset($_POST['editproduk'])) {
         alert("Gagal Edit");
         window.location.href="stok.php";
         </script>';
+    }
+}
+// Proses tambah produk
+if (isset($_POST['tambah'])) {
+    $nama_produk = $_POST['nama_produk'];
+    $deskripsi = $_POST['deskripsi'];
+    $harga = $_POST['harga'];
+    $stok = $_POST['stok'];
+
+    $insert_produk = mysqli_query($koneksi, "INSERT INTO produk (nama_produk, deskripsi, harga, stok) VALUES ('$nama_produk', '$deskripsi', '$harga', '$stok')");
+
+    if ($insert_produk) {
+        header('Location: stok.php');
+    } else {
+        echo '<script>alert("Gagal Tambah Produk");</script>';
     }
 }
 

@@ -83,7 +83,7 @@ $h2 = mysqli_num_rows($h1);
                                             <th>Nama Pelanggan</th>
                                             <th>Alamat</th>
                                             <th>Jumlah</th>
-                                            <th>Aksi</th>
+                                            <th>Tampilkan</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -105,7 +105,7 @@ $h2 = mysqli_num_rows($h1);
                                                 <td><?= $nama_pelanggan; ?></td>
                                                 <td><?= $alamat ?></td>
                                                 <td><?= $jumlah ?></td>
-                                                <td><a href="view.php?idp=<?= $id_pesanan; ?>" class="btn btn-primary" target="_blank">Tampilkan</a> | Delete</td>
+                                                <td><a href="view.php?idp=<?= $id_pesanan; ?>" class="btn btn-primary" target="_blank">Tampilkan</td>
                                             </tr>
                                         <?php
                                         };

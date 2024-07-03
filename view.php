@@ -10,11 +10,82 @@ if (isset($_GET['idp'])) {
         $idpel = $np['id_pelanggan'];
     } else {
         header('location: index.php');
-        exit;
     }
-} else {
-    header('location: index.php');
-    exit;
+}
+
+// Proses edit produk pesanan
+if (isset($_POST['editprodukpesanan'])) {
+    $iddetail = $_POST['iddetail'];
+    $idpr = $_POST['idpr'];
+    $idp = $_POST['idp'];
+    $qty_baru = $_POST['qty'];
+
+    // Cek qty sekarang
+    $cek1 = mysqli_query($koneksi, "SELECT qty FROM detail_pesanan WHERE id_detailpesanan='$iddetail'");
+    $cek2 = mysqli_fetch_array($cek1);
+    $qty_sekarang = $cek2['qty'];
+
+    // Cek stok sekarang
+    $cek3 = mysqli_query($koneksi, "SELECT stok FROM produk WHERE id_produk='$idpr'");
+    $cek4 = mysqli_fetch_array($cek3);
+    $stok_sekarang = $cek4['stok'];
+
+    if ($qty_baru > $qty_sekarang) {
+        $selisih = $qty_baru - $qty_sekarang;
+        if ($stok_sekarang >= $selisih) {
+            $stok_baru = $stok_sekarang - $selisih;
+        } else {
+            echo '<script>alert("Stok tidak cukup");</script>';
+            exit;
+        }
+    } else {
+        $selisih = $qty_sekarang - $qty_baru;
+        $stok_baru = $stok_sekarang + $selisih;
+    }
+
+    $update = mysqli_query($koneksi, "UPDATE produk SET stok='$stok_baru' WHERE id_produk='$idpr'");
+    if ($update) {
+        $update_qty = mysqli_query($koneksi, "UPDATE detail_pesanan SET qty='$qty_baru' WHERE id_detailpesanan='$iddetail'");
+        if ($update_qty) {
+            header('Location: view.php?idp=' . $idp);
+        } else {
+            echo '<script>alert("Gagal update quantity");</script>';
+        }
+    } else {
+        echo '<script>alert("Gagal update stok");</script>';
+    }
+}
+
+// Proses hapus produk pesanan
+if (isset($_POST['hapusprodukpesanan'])) {
+    $iddetail = $_POST['iddetail'];
+    $idpr = $_POST['idpr'];
+    $idp = $_POST['idp'];
+
+    // Cek qty sekarang
+    $cek1 = mysqli_query($koneksi, "SELECT qty FROM detail_pesanan WHERE id_detailpesanan='$iddetail'");
+    $cek2 = mysqli_fetch_array($cek1);
+    $qty_sekarang = $cek2['qty'];
+
+    // Cek stok sekarang
+    $cek3 = mysqli_query($koneksi, "SELECT stok FROM produk WHERE id_produk='$idpr'");
+    $cek4 = mysqli_fetch_array($cek3);
+    $stok_sekarang = $cek4['stok'];
+
+    // Update stok
+    $stok_baru = $stok_sekarang + $qty_sekarang;
+    $update = mysqli_query($koneksi, "UPDATE produk SET stok='$stok_baru' WHERE id_produk='$idpr'");
+    if ($update) {
+        // Hapus produk dari detail pesanan
+        $delete = mysqli_query($koneksi, "DELETE FROM detail_pesanan WHERE id_detailpesanan='$iddetail'");
+        if ($delete) {
+            header('Location: view.php?idp=' . $idp);
+        } else {
+            echo '<script>alert("Gagal hapus produk dari pesanan");</script>';
+        }
+    } else {
+        echo '<script>alert("Gagal update stok");</script>';
+    }
 }
 ?>
 
@@ -119,39 +190,70 @@ if (isset($_GET['idp'])) {
                                     <td>Rp.<?= number_format($harga); ?></td>
                                     <td><?= number_format($qty); ?></td>
                                     <td>Rp.<?= number_format($subtotal); ?></td>
-                                    <td>Edit | <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete<?= $idpr; ?>">Delete</button></td>
+                                    <td>
+                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit<?= $idpr; ?>">Edit</button>
+                                        | 
+                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete<?= $idpr; ?>">Delete</button>
+                                    </td>
                                 </tr>
-                            <?php 
-                            }; // end of while
-                            ?> 
-                            <!-- Modal -->
-                            <div class="modal" id="delete<?= $idpr; ?>">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <!-- Modal Header -->
-                                        <div class="modal-header">
-                                            <h4 class="modal-title">Hapus Data Pesanan</h4>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <form method="POST">
-                                            <!-- Modal body -->
-                                            <div class="modal-body">
-                                                Apakah Anda Yakin Akan Menghapus barang ini?
-                                                <input type="hidden" name="idp" value="<?= $idp; ?>">
-                                                <input type="hidden" name="idpr" value="<?= $idpr; ?>">
-                                                <input type="hidden" name="iddetail" value="<?= $iddetail; ?>">
 
+                                <!-- Modal Delete -->
+                                <div class="modal" id="delete<?= $idpr; ?>">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Hapus Data Pesanan</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
-                                            <!-- Modal footer -->
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn btn-success" name="hapusprodukpesanan">Hapus</button>
-                                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                                            </div>
-                                        </form>
+                                            <form method="POST">
+                                                <!-- Modal body -->
+                                                <div class="modal-body">
+                                                    Apakah Anda Yakin Akan Menghapus barang ini?
+                                                    <input type="hidden" name="idp" value="<?= $idp; ?>">
+                                                    <input type="hidden" name="idpr" value="<?= $idpr; ?>">
+                                                    <input type="hidden" name="iddetail" value="<?= $iddetail; ?>">
+                                                </div>
+                                                <!-- Modal footer -->
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-success" name="hapusprodukpesanan">Hapus</button>
+                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
+                                <!-- Modal Edit -->
+                                <div class="modal" id="edit<?= $idpr; ?>">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Edit Data Pesanan</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form method="POST">
+                                                <!-- Modal body -->
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="iddetail" value="<?= $iddetail; ?>">
+                                                    <input type="hidden" name="idp" value="<?= $idp; ?>">
+                                                    <input type="hidden" name="idpr" value="<?= $idpr; ?>">
+                                                    <label>Quantity</label>
+                                                    <input type="number" name="qty" class="form-control mt-3" placeholder="quantity" value="<?= $qty; ?>" min="1" required>
+                                                </div>
+                                                <!-- Modal footer -->
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-success" name="editprodukpesanan">Simpan</button>
+                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php 
+                            }; // end of while
+                            ?> 
                             </tbody>
                         </table>
                     </div>
@@ -176,7 +278,7 @@ if (isset($_GET['idp'])) {
 <script src="js/datatables-simple-demo.js"></script>
 </body>
 
-<!-- Modal -->
+<!-- Modal Tambah Pesanan -->
 <div class="modal" id="myModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -200,9 +302,8 @@ if (isset($_GET['idp'])) {
                             ?>
                             <option value="<?=$id_produk; ?>"> <?= $nama_produk; ?> - <?= $deskripsi; ?> - (Stok: <?=$stok;?>)</option>
                             <?php    
-                            }
-                        
-                            ?>
+                        }
+                        ?>
                     </select>
                     <input type="number" name="qty" class="form-control mt-3" placeholder="quantity" min="1" required>
                     <input type="hidden" name="idp" value="<?= $idp; ?>">

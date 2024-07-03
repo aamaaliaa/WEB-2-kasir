@@ -56,7 +56,7 @@ $barang = mysqli_query($koneksi, "SELECT * FROM masuk m, produk p WHERE m.id_pro
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Stock Barang Masuk</h1>
+                    <h1 class="mt-4">Stok Barang Masuk</h1>
                     <div class="row">
                         <div class="col-xl-3 col-md-6">
                             <div>
@@ -118,8 +118,8 @@ $barang = mysqli_query($koneksi, "SELECT * FROM masuk m, produk p WHERE m.id_pro
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary" name="editbarangmasuk">Save changes</button>
+                                                    <button type="button" class="btn btn-success" data-bs-dismiss="editbarangmasuk">Close</button>
+                                                    <button type="submit" class="btn btn-primary" name="editbarangmasuk">Simpan</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -140,7 +140,7 @@ $barang = mysqli_query($koneksi, "SELECT * FROM masuk m, produk p WHERE m.id_pro
                                                     <p>Apakah Anda yakin ingin menghapus barang masuk ini?</p>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-success" data-bs-dismiss="deletebarangmasuk">Close</button>
                                                     <button type="submit" class="btn btn-danger" name="deletebarangmasuk">Delete</button>
                                                 </div>
                                             </form>
